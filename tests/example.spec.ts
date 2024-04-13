@@ -15,5 +15,25 @@ test('get started link', async ({ page }) => {
 
   // Expects page to have a heading with the name of Installation.
   await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-  
+
 });
+
+
+
+test('Validate Locators', async ({ page }) => {
+  await page.goto('https://playwright.dev/');
+
+  // Go to Search
+  await page.getByText('Search').click();
+
+  await page.getByPlaceholder('Search docs').fill('Locators');
+
+  await page.getByText('Locators', )//.press('Enter');
+  await page.keyboard.press('Enter');
+
+  await expect(page.getByText('Locators')).toHaveText('Locators');
+ 
+ 
+});
+
+
