@@ -23,17 +23,21 @@ test('get started link', async ({ page }) => {
 test('Validate Locators', async ({ page }) => {
   await page.goto('https://playwright.dev/');
 
+
   // Go to Search
   await page.getByText('Search').click();
 
+  //Write in Search window Locators and perform search
   await page.getByPlaceholder('Search docs').fill('Locators');
-
-  await page.getByText('Locators', )//.press('Enter');
+  await page.waitForTimeout(1000);
   await page.keyboard.press('Enter');
 
-  await expect(page.getByText('Locators')).toHaveText('Locators');
- 
- 
+  //Expects page to have a heading with the name of Locators.
+  await expect(page.getByRole('heading', { name: 'Locators', exact: true })).toBeVisible();
+
+  //Verify header name 'Locators'
+  await expect(page.getByRole('heading', { name: 'Locators', exact: true })).toHaveText('Locators');
+
 });
 
 
