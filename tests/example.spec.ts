@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 test('has title', async ({ page }) => {
   await page.goto('https://playwright.dev/');
@@ -20,24 +20,30 @@ test('get started link', async ({ page }) => {
 
 
 
-test('Validate Locators', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe('Hooks Test Suite', () => {
+  let page: Page;
 
+  // Runs before all tests
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage();
+    await page.goto('https://playwright.dev/'); // Moved here
+  });
 
-  // Go to Search
-  await page.getByText('Search').click();
-
-  //Write in Search window Locators and perform search
-  await page.getByPlaceholder('Search docs').fill('Locators');
-  await page.waitForTimeout(1000);
-  await page.keyboard.press('Enter');
-
-  //Expects page to have a heading with the name of Locators.
-  await expect(page.getByRole('heading', { name: 'Locators', exact: true })).toBeVisible();
-
-  //Verify header name 'Locators'
-  await expect(page.getByRole('heading', { name: 'Locators', exact: true })).toHaveText('Locators');
-
+  test('Validate Locators', async () => {
+    // Go to Search
+    await page.locator("//nav[contains(@class, 'navbar')]//span[@class = 'DocSearch-Button-Placeholder']").click();
+    // Write in Search window Locators and perform search
+    await page.locator("//input[@class = 'DocSearch-Input']").fill('Locators');
+    await page.getByRole('link', { name: 'Locators', exact: true }).click();
+    // Expects page to have a heading with the name of Locators.
+    await expect(page.getByRole('heading', { name: 'Locators', exact: true })).toBeVisible();
+    // Verify header name 'Locators'
+    await expect(page.getByRole('heading', { name: 'Locators', exact: true })).toHaveText('Locators');
+  });
+  // Runs after all tests
+  test.afterAll(async () => {
+    await page.close();
+  });
 });
 
 
