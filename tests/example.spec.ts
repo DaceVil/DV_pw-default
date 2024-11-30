@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { TIMEOUT } from 'dns';
 
 test('has title', async ({ page }) => {
   await page.goto('https://playwright.dev/');
@@ -44,6 +45,66 @@ test.describe('Hooks Test Suite', () => {
   test.afterAll(async () => {
     await page.close();
   });
+
 });
 
+// login
+// 3, check filter functionality
+test('Test X2', async ({ page }) => {
+  await page.goto('https://www.saucedemo.com/');
+  //input[@id='user-name']
+  await page.locator("//input[@id='user-name']").type('standard_user');
+  //input password
+  await page.locator("//input[@id='password']").type('secret_sauce');
+  //press login button
+  await page.locator("//input[@id='login-button']").click();
+  //click on filter icon
+  await page.click('.select_container');
+
+  const filterMenu = await page.isVisible('.product_sort_container');
+  expect(filterMenu).toBe(true);
+  //sort by low to high
+  const dropdownSelector = '.product_sort_container';  // Assuming this is the select element
+
+  await page.waitForSelector(dropdownSelector, { state: 'visible' });
+  // Choose the option by value or label (depending on what the dropdown is using)
+  await page.selectOption(dropdownSelector, { value: 'lohi' }); // Use the label, value, or index
+
+  //first item should be Sauce Labs Onesie
+  const firstProduct = await page.locator('.inventory_item_name').first();
+
+  // Get the text content of the first product
+  const firstProductText = await firstProduct.textContent();
+
+  // Compare the actual text of the first product to the expected string
+  expect(firstProductText.trim()).toBe('Sauce Labs Onesie');
+
+  await page.click('.select_container');
+
+  const filterMenu2 = await page.isVisible('.product_sort_container');
+  expect(filterMenu).toBe(true);
+  //sort by low to high
+  const dropdownSelector2 = '.product_sort_container';  // Assuming this is the select element
+
+  await page.waitForSelector(dropdownSelector2, { state: 'visible' });
+  // Choose the option by value or label (depending on what the dropdown is using)
+  await page.selectOption(dropdownSelector, { value: 'hilo' }); // Use the label, value, or index
+
+  //first item should be Sauce Labs Onesie
+  const firstProduct2 = await page.locator('.inventory_item_name').first();
+
+  // Get the text content of the first product
+  const firstProductText2 = await firstProduct.textContent();
+
+  // Compare the actual text of the first product to the expected string
+  expect(firstProductText2.trim()).toBe('Sauce Labs Fleece Jacket');
+
+});
+
+
+test('hover over sign in', async ({ page }) => {
+  await page.goto('https://danube-web.shop/');
+  await page.getByRole('button', { name: 'Log in' }).click();
+  await page.getByRole('button', { name: 'Sign In' }).hover();
+});
 
